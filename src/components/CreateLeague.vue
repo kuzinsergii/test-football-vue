@@ -33,6 +33,7 @@
         </tbody>
       </table>
       <button v-if="leagueData.next_round > 0" @click="playRound">Play Next Round (Week {{ leagueData.next_round }})</button>
+      <button v-if="leagueData.next_round > 0" @click="playAllRounds">Play All Rounds</button>
 
       <div v-if="leagueData.games && leagueData.games.length">
         <h2>Games This Week</h2>
@@ -90,6 +91,16 @@ export default {
         console.error('Error playing round:', error);
       }
     },
+    async playAllRounds() {
+      try {
+        const response = await axios.post(`http://localhost/api/league/${this.leagueData.league_id}/play-round/1000`);
+        this.leagueData.standings = response.data.standings;
+        this.leagueData.next_round = response.data.next_round;
+        this.leagueData.games = response.data.games;
+      } catch (error) {
+        console.error('Error playing all rounds:', error);
+      }
+    },
   },
 };
 </script>
@@ -112,5 +123,6 @@ th {
 
 button {
   margin-top: 10px;
+  margin-right: 10px;
 }
 </style>
